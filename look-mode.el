@@ -196,8 +196,7 @@ it to look-at-next-file"
                (catch 'skip-this-one 
                  (dolist (regexp look-skip-file-list t)
                    (if (string-match regexp lfl-item)
-                       (throw 'skip-this-one nil))))
-              )
+                       (throw 'skip-this-one nil)))))
           (setq look-forward-file-list
                 (nconc look-forward-file-list
                        (list (concat look-pwd lfl-item))))
@@ -206,8 +205,7 @@ it to look-at-next-file"
                  (catch 'skip-this-one 
                    (dolist (regexp look-skip-directory-list t)
                      (if (string-match regexp lfl-item)
-                         (throw 'skip-this-one nil))))
-                 )
+                         (throw 'skip-this-one nil)))))
             (if look-recurse-dirlist
                 (setq fullpath-dir-list
                       (nconc fullpath-dir-list
@@ -216,20 +214,16 @@ it to look-at-next-file"
                               (concat look-pwd lfl-item) look-skip-directory-list)))
               (setq fullpath-dir-list
                     (nconc fullpath-dir-list
-                           (list lfl-item))))
-          )))
+                           (list lfl-item)))))))
     ; now strip look-pwd off the subdirs in subdirlist    
     ; or maybe I should leave everything as full-path....
     (dolist (fullpath fullpath-dir-list look-subdir-list)
       (setq look-subdir-list
             (nconc look-subdir-list
                    (list (file-name-as-directory
-                          (replace-regexp-in-string look-pwd "" fullpath)))))
-      )
-    );tel
+                          (replace-regexp-in-string look-pwd "" fullpath)))))));tel
   (get-buffer-create look-buffer)
-  (look-at-next-file)
-  )
+  (look-at-next-file))
 
 (defun look-at-next-file ()
   "gets the next file in the list.  Discards the file from the
@@ -247,19 +241,15 @@ list if it is not a regular file or symlink to one."
         (insert-file-contents look-current-file); insert it into the *look* buffer
         (normal-mode); get the "normal mode" for this file
         (if (eq major-mode 'fundamental-mode)
-            (look-set-mode-with-auto-mode-alist t)
-          )
-        (look-update-header-line)
-        )
-    (look-no-more)
-    )
+            (look-set-mode-with-auto-mode-alist t))
+        (look-update-header-line))
+    (look-no-more))
   (look-mode); assert look mode
   (if (and look-current-file (featurep 'eimp)
-           (string-match "[Jj][Pp][Ee]?[Gg]" 
+           (string-match "[Jj][Pp][Ee]?[Gg]"
                          (or (file-name-extension look-current-file) "")))
-      (eimp-fit-image-to-window nil) ; scale to window if its a jpeg
-    )
-  )
+      ;; scale to window if its a jpeg
+      (eimp-fit-image-to-window nil)))
 
 (defun look-at-previous-file ()
   "gets the previous file in the list"
@@ -276,19 +266,15 @@ list if it is not a regular file or symlink to one."
         (insert-file-contents look-current-file) ; insert it into the *look* buffer
         (normal-mode)
         (if (eq major-mode 'fundamental-mode)
-            (look-set-mode-with-auto-mode-alist t)
-          )
-        (look-update-header-line)
-        )
-    (look-no-more)
-    )
+            (look-set-mode-with-auto-mode-alist t))
+        (look-update-header-line))
+    (look-no-more))
   (look-mode); assert look mode
   (if (and look-current-file (featurep 'eimp)
-           (string-match "[Jj][Pp][Ee]?[Gg]" 
+           (string-match "[Jj][Pp][Ee]?[Gg]"
                          (or (file-name-extension look-current-file) "")))
-      (eimp-fit-image-to-window nil) ; scale to window if its a jpeg
-    )
-  )
+      ;; scale to window if its a jpeg
+      (eimp-fit-image-to-window nil)))
 
 (defun look-at-this-file ()
   "reloads current file in the buffer"
@@ -333,8 +319,7 @@ the buffer."
                                    " |"
                                    (number-to-string (length look-forward-file-list)) "]"
                                    )))
-        (jj 1)
-        )
+        (jj 1))
     (if look-show-subdirs
         ; list all but the first item in look-subdir-list
         (while (< jj (length look-subdir-list))
