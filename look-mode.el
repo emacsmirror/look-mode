@@ -145,13 +145,11 @@ look-subdir-list"
   "a minor mode for flipping through files"
   :init-value nil ; maybe make this t?
   :lighter " Look"
-  :keymap look-minor-mode-map
-  )
+  :keymap look-minor-mode-map)
 
 (add-hook 'dired-mode-hook
           (lambda ()
-            (define-key dired-mode-map "\M-l" 'look-at-files)
-            ))
+            (define-key dired-mode-map "\M-l" 'look-at-files)))
 
 (defun look-reset-variables ()
   "re-initializes look-mode's variables"
@@ -163,8 +161,7 @@ look-subdir-list"
   (setq look-skip-directory-list nil)
   (setq look-show-subdirs nil)
   (setq look-current-file nil)
-  (setq look-buffer "*look*")
-)
+  (setq look-buffer "*look*"))
 
 ;;;; Navigation Commands
 
