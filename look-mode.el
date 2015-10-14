@@ -245,7 +245,7 @@ With prefix arg get the ARG'th next file in the list."
     (setq look-current-file (if look-forward-file-list
 				;; get the next file in the list
 				(pop look-forward-file-list))))
-  (look-set-mode look-current-file)
+  (look-setup-buffer look-current-file)
   (look-adjust-file))
 
 (defun look-at-previous-file (&optional arg)
@@ -259,7 +259,7 @@ With prefix arg get the ARG'th previous file in the list."
     (setq look-current-file (if look-reverse-file-list
 				;; get the next file in the list
 				(pop look-reverse-file-list))))
-  (look-set-mode look-current-file)
+  (look-setup-buffer look-current-file)
   (look-adjust-file))
 
 (defun look-remove-this-file nil
@@ -272,7 +272,7 @@ With prefix arg get the ARG'th previous file in the list."
 				(pop look-reverse-file-list)
 			      (if look-forward-file-list
 				  (pop look-reverse-file-list))))
-    (look-set-mode look-current-file)
+    (look-setup-buffer look-current-file)
     (look-adjust-file)))
 
 (defun look-at-nth-file (n)
@@ -330,7 +330,7 @@ With 0 being the first file, and -1 being the last file,
   (interactive); pass no args on interactive call
   (kill-buffer look-buffer); clear the look-buffer
   (switch-to-buffer look-buffer); reopen the look-buffer
-  (look-set-mode look-current-file)
+  (look-setup-buffer look-current-file)
   (look-adjust-file))
 
 (defun look-sort-files (method)
@@ -411,7 +411,7 @@ METHOD can be the symbol 'name (sort names alphabetically),
 
 ;;;; subroutines
 
-(defun look-set-mode (file)
+(defun look-setup-buffer (file)
   "Insert FILE into current buffer and set mode appropriately."
   (if file
       (progn
