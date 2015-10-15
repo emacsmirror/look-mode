@@ -106,7 +106,7 @@
   :group 'look
   :type 'boolean)
 
-(defcustom look-extra-info-templates
+(defcustom look-file-statuses-templates
   '((doc-view-mode . `(progn (setq doc-view-image-width ,doc-view-image-width)
 			     (doc-view-goto-page ,(doc-view-current-page))
 			     (image-next-line ,(window-vscroll))
@@ -131,7 +131,7 @@ page number etc, and will be evaluated when the file is visited again."
 		:value-type (sexp :tag "List")))
 
 ;; Variables that make the code work
-(defvar look-extra-info nil
+(defvar look-file-statuses nil
   "Alist of filenames and sexps to evaluate when the file is visited.")
 (defvar look-forward-file-list nil
   "List of files stored by the command look-at-files for future viewing.")
@@ -191,7 +191,7 @@ page number etc, and will be evaluated when the file is visited again."
   (setq look-skip-directory-list nil)
   (setq look-show-subdirs nil)
   (setq look-current-file nil)
-  (setq look-extra-info nil)
+  (setq look-file-statuses nil)
   (setq look-buffer "*look*"))
 
 ;;;; Navigation Commands
@@ -263,11 +263,11 @@ Discards the file from the list if it is not a regular file or symlink to one.
 With prefix arg get the ARG'th next file in the list."
   (interactive "p")		    ; pass no args on interactive call
   (if (and look-current-file
-	   (assoc major-mode look-extra-info-templates))
-      (let ((info (eval (cdr (assoc major-mode look-extra-info-templates))))
-	    (item (assoc look-current-file look-extra-info)))
+	   (assoc major-mode look-file-statuses-templates))
+      (let ((info (eval (cdr (assoc major-mode look-file-statuses-templates))))
+	    (item (assoc look-current-file look-file-statuses)))
 	(if item (setcdr item info)
-	  (add-to-list 'look-extra-info (cons look-current-file info)))))
+	  (add-to-list 'look-file-statuses (cons look-current-file info)))))
   (kill-buffer look-buffer)		; clear the look-buffer
   (switch-to-buffer look-buffer)	; reopen the look-buffer
   (dotimes (i (or arg 1))
@@ -282,11 +282,11 @@ With prefix arg get the ARG'th next file in the list."
 With prefix arg get the ARG'th previous file in the list."
   (interactive "p"); pass no args on interactive call
   (if (and look-current-file
-	   (assoc major-mode look-extra-info-templates))
-      (let ((info (eval (cdr (assoc major-mode look-extra-info-templates))))
-	    (item (assoc look-current-file look-extra-info)))
+	   (assoc major-mode look-file-statuses-templates))
+      (let ((info (eval (cdr (assoc major-mode look-file-statuses-templates))))
+	    (item (assoc look-current-file look-file-statuses)))
 	(if item (setcdr item info)
-	  (add-to-list 'look-extra-info (cons look-current-file info)))))
+	  (add-to-list 'look-file-statuses (cons look-current-file info)))))
   (kill-buffer look-buffer); clear the look-buffer
   (switch-to-buffer look-buffer); reopen the look-buffer
   (dotimes (i (or arg 1))
@@ -462,6 +462,11 @@ METHOD can be the symbol 'name (sort names alphabetically),
 	  look-reverse-file-list (reverse (cl-subseq files 0 pos2)))
     (look-update-header-line)))
 
+(defun look-reset-file-statuses nil
+  "Reset the file statuses saved in `look-file-statuses'."
+  (interactive)
+  (setq look-file-statuses nil))
+
 ;;;; subroutines
 
 (defun look-setup-buffer (file)
@@ -473,8 +478,8 @@ METHOD can be the symbol 'name (sort names alphabetically),
 	(if (eq major-mode (default-value 'major-mode))
 	    (look-set-mode-with-auto-mode-alist t))
 	(look-update-header-line)
-	(if (assoc major-mode look-extra-info-templates)
-	    (eval (cdr (assoc look-current-file look-extra-info)))))
+	(if (assoc major-mode look-file-statuses-templates)
+	    (eval (cdr (assoc look-current-file look-file-statuses)))))
     (look-no-more))
   (look-mode))				; assert look mode
 
