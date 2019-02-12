@@ -1,9 +1,9 @@
 ;;; look-mode.el --- quick file viewer for image and text file browsing
 
-;;; Copyright (C) 2008,2009 Peter H. Mao
+;;; Copyright (C) 2008,2009,2019 Peter H. Mao
 
-;; Author: Peter H. Mao <peter.mao@gmail.com> <peterm@srl.caltech.edu>
-;; Version %Id: 13%
+;; Author: Peter H. Mao <peter.mao@gmail.com> <petermao@jpl.nasa.gov>
+;; Version %Id: 14%
 
 ;; look-mode.el is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
 ;; General Public License for more details.
 
 ;;; Change log:
+;;
+;; 2019-02-12: default-major-mode is gone as of emacs 26.1, replace with 'fundamental-mode
 ;;
 ;; 2009-10-02: fixed look-pwd to properly handle dirs with spaces
 ;;
@@ -244,7 +246,7 @@ list if it is not a regular file or symlink to one."
              ; get the next file in the list
         (insert-file-contents look-current-file); insert it into the *look* buffer
         (normal-mode); get the "normal mode" for this file
-        (if (eq major-mode default-major-mode)
+        (if (eq major-mode 'fundamental-mode)
             (look-set-mode-with-auto-mode-alist t)
           )
         (look-update-header-line)
@@ -273,7 +275,7 @@ list if it is not a regular file or symlink to one."
                                         ; get the next file in the list
         (insert-file-contents look-current-file) ; insert it into the *look* buffer
         (normal-mode)
-        (if (eq major-mode default-major-mode)
+        (if (eq major-mode 'fundamental-mode)
             (look-set-mode-with-auto-mode-alist t)
           )
         (look-update-header-line)
@@ -296,7 +298,7 @@ list if it is not a regular file or symlink to one."
   (if look-current-file
       (progn 
         (insert-file-contents look-current-file) ; insert it into the *look* buffer
-        (if (eq major-mode default-major-mode)
+        (if (eq major-mode 'fundamental-mode)
             (look-set-mode-with-auto-mode-alist t))
         (look-update-header-line))
     (look-no-more))
