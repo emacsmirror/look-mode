@@ -233,9 +233,7 @@ With prefix arg get the ARG'th next file in the list."
   (kill-buffer look-buffer)	    ; clear the look-buffer
   (switch-to-buffer look-buffer)    ; reopen the look-buffer
   (dotimes (i (or arg 1))
-    (if (and look-current-file
-	     (or (eq i 0) look-forward-file-list))
-	(push look-current-file look-reverse-file-list))
+    (if look-current-file (push look-current-file look-reverse-file-list))
     (setq look-current-file (if look-forward-file-list
 				;; get the next file in the list
 				(pop look-forward-file-list))))
@@ -261,9 +259,7 @@ With prefix arg get the ARG'th previous file in the list."
   (kill-buffer look-buffer); clear the look-buffer
   (switch-to-buffer look-buffer); reopen the look-buffer
   (dotimes (i (or arg 1))
-    (if (and look-current-file
-	     (or (eq i 0) look-reverse-file-list))
-	(push look-current-file look-forward-file-list))
+    (if look-current-file (push look-current-file look-forward-file-list))
     (setq look-current-file (if look-reverse-file-list
 				;; get the next file in the list
 				(pop look-reverse-file-list))))
