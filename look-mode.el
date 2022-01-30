@@ -137,8 +137,8 @@ look-subdir-list"
     (define-key map (kbd "M-#") 'look-at-nth-file)
     (define-key map (kbd "M-/") 'look-at-specific-file)
     (define-key map (kbd "M-k") 'look-remove-this-file)
-    (define-key map (kbd "M-s") 'look-re-search-forward)
-    (define-key map (kbd "M-r") 'look-re-search-backward)
+    (define-key map (kbd "C-s") 'look-re-search-forward)
+    (define-key map (kbd "C-r") 'look-re-search-backward)
     (define-key map (kbd "C-c l")
       (lambda () (interactive)
         (customize-group 'look)))
@@ -355,7 +355,8 @@ With 0 being the first file, and -1 being the last file,
 		     (pdf-view-mode (pdf-isearch-search-function str))
 		     (doc-view-mode (doc-view-search str t))
 		     (t (search-backward str nil t)))))
-    (look-at-next-file)))
+    (look-at-previous-file)
+    (goto-char (point-max))))
 
 (defun look-at-this-file ()
   "reloads current file in the buffer"
