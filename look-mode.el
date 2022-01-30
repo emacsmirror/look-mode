@@ -17,6 +17,8 @@
 
 ;;; Change log:
 ;;
+;; 2022-01-29: Importing vapnik's changes. 'fundamental-mode -> (default-value 'major-mode)
+;;
 ;; 2019-02-12: default-major-mode is gone as of emacs 26.1, replace with 'fundamental-mode
 ;;
 ;; 2009-10-02: fixed look-pwd to properly handle dirs with spaces
@@ -255,16 +257,12 @@ With prefix arg get the ARG'th next file in the list."
 	;;     (pdf-view-redisplay t)
 	;;   (if (eq major-mode 'doc-view-mode)
 	;;       nil))
-        (if (eq major-mode 'fundamental-mode)
+        (if (eq major-mode (default-value 'major-mode))
             (look-set-mode-with-auto-mode-alist t))
         (look-update-header-line))
     (look-no-more))
-  (look-mode); assert look mode
-  (if (and look-current-file (featurep 'eimp)
-           (string-match "[Jj][Pp][Ee]?[Gg]"
-                         (or (file-name-extension look-current-file) "")))
-      ;; scale to window if its a jpeg
-      (eimp-fit-image-to-window nil)))
+  (look-mode)				; assert look mode
+  (look-adjust-file))
 
 (defun look-at-previous-file (&optional arg)
   "Gets the previous file in the list.
@@ -281,16 +279,12 @@ With prefix arg get the ARG'th previous file in the list."
       (progn
         (insert-file-contents look-current-file) ; insert it into the *look* buffer
         (normal-mode)
-        (if (eq major-mode 'fundamental-mode)
+        (if (eq major-mode (default-value 'major-mode))
             (look-set-mode-with-auto-mode-alist t))
         (look-update-header-line))
     (look-no-more))
   (look-mode); assert look mode
-  (if (and look-current-file (featurep 'eimp)
-           (string-match "[Jj][Pp][Ee]?[Gg]"
-                         (or (file-name-extension look-current-file) "")))
-      ;; scale to window if its a jpeg
-      (eimp-fit-image-to-window nil)))
+  (look-adjust-file))
 
 (defun look-remove-this-file nil
   "Remove the currently looked at file from the list."
@@ -306,7 +300,7 @@ With prefix arg get the ARG'th previous file in the list."
 	(progn
 	  (insert-file-contents look-current-file) ; insert it into the *look* buffer
 	  (normal-mode)
-	  (if (eq major-mode default-major-mode)
+	  (if (eq major-mode (default-value 'major-mode))
 	      (look-set-mode-with-auto-mode-alist t))
 	  (look-update-header-line))
       (look-no-more))
@@ -375,16 +369,12 @@ With 0 being the first file, and -1 being the last file,
   (if look-current-file
       (progn
         (insert-file-contents look-current-file) ; insert it into the *look* buffer
-        (if (eq major-mode 'fundamental-mode)
+        (if (eq major-mode (default-value 'major-mode))
             (look-set-mode-with-auto-mode-alist t))
         (look-update-header-line))
     (look-no-more))
   (look-mode); assert look mode
-  (if (and look-current-file (featurep 'eimp)
-           (string-match "[Jj][Pp][Ee]?[Gg]"
-                         (or (file-name-extension look-current-file) "")))
-      ;; scale to window if its a jpeg
-      (eimp-fit-image-to-window nil)))
+  (look-adjust-file))
 
 (defun look-sort-files (method)
   "Sort the looked at files.
