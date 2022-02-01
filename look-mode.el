@@ -211,11 +211,10 @@ and whose cdr is an sexp to be evaluated in files with that mode."
   "Look at files in directory. Insert into temporary buffer one at a time.
 This function gets the file list by expanding LOOK-WILDCARD with
  `file-expand-wildcards', and passes it to `look-at-next-file'.
-If ADD is non-nil then files are added to the end of the currently looked at files, 
-otherwise they replace them."
-  (interactive (list (read-from-minibuffer "Enter filename (w/ wildcards): ")
-		     (if (or look-forward-file-list look-reverse-file-list)
-			 (y-or-n-p "Add to current list of looked at files? "))))
+ If ADD is non-nil (set by prefix arg such as C-u) then files are
+ added to the end of the currently looked at files, otherwise
+ they replace them."
+  (interactive "sfEnter filename (w/ wildcards): \nP")
   (if (and (string-match "[Jj][Pp][Ee]?[Gg]" look-wildcard)
            (not (featurep 'eimp)))
       (require 'eimp nil t))
@@ -223,7 +222,11 @@ otherwise they replace them."
       (setq look-wildcard "*"))
   (if (not add) (setq look-forward-file-list nil
 		      look-reverse-file-list nil
-		      look-current-file nil))
+		      look-current-file nil)
+    (progn (push look-current-file look-reverse-file-list)
+           (setq look-reverse-file-list (append (nreverse look-forward-file-list) look-reverse-file-list)
+                 look-current-file (pop look-reverse-file-list)
+                 look-forward-file-list nil)))
   (setq look-subdir-list (list "./")
 	look-pwd (replace-regexp-in-string
 		  "~" (getenv "HOME")
