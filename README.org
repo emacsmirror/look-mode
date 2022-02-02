@@ -2,25 +2,27 @@
 
 ** Functions and keybindings
 
-*** Main: look-at-files (look-wildcard &optional add)
+*** Main: look-at-files (&optional add)
+    looks at marked files.  If no files are marked (or only one),
+    prompt user for a file glob.
 *** Navigation:
-    C-. or M-n: look-at-next-file (&optional arg)
-    C-, or M-p: look-at-previous-file (&optional arg)
-    M-#       : look-at-nth-file (n)
-    M-/       : look-at-specific-file (file)
+    - C-. or M-n: look-at-next-file (&optional arg)
+    - C-, or M-p: look-at-previous-file (&optional arg)
+    - M-#       : look-at-nth-file (n)
+    - M-/       : look-at-specific-file (file)
 *** Search
-    C-s       : look-re-search-forward (regex)
-    C-r       : look-re-search-backward (regex)
+    - C-s       : look-re-search-forward (regex)
+    - C-r       : look-re-search-backward (regex)
 *** List manipulations
-              : look-remove-this-file
-              : look-insert-file (file)
-    M-R       : look-reverse-files
-    M-~       : look-move-current-file (pos)
-    M-^       : look-sort-files (pred) [not working]
+    -           : look-remove-this-file
+    -           : look-insert-file (file)
+    - M-R       : look-reverse-files
+    - M-~       : look-move-current-file (pos)
+    - M-^       : look-sort-files (pred) [not working]
 
-    look-reset-file-settings nil
-    look-customize-defaults nil
-    look-filter-files (pred &optional arg)
+    - look-reset-file-settings nil
+    - look-customize-defaults nil
+    - look-filter-files (pred &optional arg)
 
 ** What it does
 

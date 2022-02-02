@@ -218,19 +218,14 @@ and whose cdr is an sexp to be evaluated in files with that mode."
 
 ;;;; Navigation Commands
 
-(defun look-at-files (look-wildcard &optional add)
+(defun look-at-files (&optional add)
   "Look at files in directory. Insert into temporary buffer one at a time.
-This function gets the file list by expanding LOOK-WILDCARD with
- `file-expand-wildcards', and passes it to `look-at-next-file'.
- If ADD is non-nil (set by prefix arg such as C-u) then files are
- added to the end of the currently looked at files, otherwise
- they replace them."
-  (interactive "sfEnter filename (w/ wildcards): \nP")
-  (if (and (string-match "[Jj][Pp][Ee]?[Gg]" look-wildcard)
-           (not (featurep 'eimp)))
-      (require 'eimp nil t))
-  (if (string= look-wildcard "")
-      (setq look-wildcard "*"))
+ This function gets the file list from dired-get-marked-files OR
+ by expanding LOOK-WILDCARD with `file-expand-wildcards', and
+ passes it to `look-at-next-file'.  If ADD is non-nil (set by
+ prefix arg such as C-u) then files are added to the end of the
+ currently looked at files, otherwise they replace them."
+  (interactive "P")
   (if (not add) (setq look-forward-file-list nil
 		      look-reverse-file-list nil
 		      look-current-file nil)
@@ -238,13 +233,23 @@ This function gets the file list by expanding LOOK-WILDCARD with
            (setq look-reverse-file-list (append (nreverse look-forward-file-list) look-reverse-file-list)
                  look-current-file (pop look-reverse-file-list)
                  look-forward-file-list nil)))
-  (setq look-subdir-list (list "./")
-	look-pwd (replace-regexp-in-string
-		  "~" (getenv "HOME")
-		  (replace-regexp-in-string
-		   "^Directory " "" (pwd))))
-  (let ((look-file-list (file-expand-wildcards look-wildcard))
-        (fullpath-dir-list nil))
+  ;; first see if there are any marked files from dired
+  (setq look-file-list (dired-get-marked-files t)) ;; will this work outside of dired?
+  (if (not (cdr look-file-list)) ;; ie, 1 or 0 files were marked -- req wildcard from user
+      (progn
+        (setq look-wildcard (read-string "Enter filename (w/ wildcards): "))
+        (if (and (string-match "[Jj][Pp][Ee]?[Gg]" look-wildcard)
+                 (not (featurep 'eimp)))
+            (require 'eimp nil t))
+        (if (string= look-wildcard "")
+            (setq look-wildcard "*"))
+        (setq look-subdir-list (list "./")
+	      look-pwd (replace-regexp-in-string
+		        "~" (getenv "HOME")
+		        (replace-regexp-in-string
+		         "^Directory " "" (pwd)))
+              look-file-list (file-expand-wildcards look-wildcard))))
+  (let ( (fullpath-dir-list nil))
     ;; use relative file names to prevent weird side effects with skip lists
     ;; cat look-pwd with filename, separate dirs from files,
     ;; remove files/dirs that match elements of the skip lists ;;
