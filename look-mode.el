@@ -243,12 +243,9 @@ and whose cdr is an sexp to be evaluated in files with that mode."
             (require 'eimp nil t))
         (if (string= look-wildcard "")
             (setq look-wildcard "*"))
-        (setq look-subdir-list (list "./")
-	      look-pwd (replace-regexp-in-string
-		        "~" (getenv "HOME")
-		        (replace-regexp-in-string
-		         "^Directory " "" (pwd)))
-              look-file-list (file-expand-wildcards look-wildcard))))
+        (setq look-file-list (file-expand-wildcards look-wildcard))))
+  (setq look-subdir-list (list "./")
+	look-pwd default-directory)
   (let ( (fullpath-dir-list nil))
     ;; use relative file names to prevent weird side effects with skip lists
     ;; cat look-pwd with filename, separate dirs from files,
