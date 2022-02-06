@@ -28,7 +28,7 @@
 ;;             look-insert-file
 ;;             look-reverse-files
 ;;             look-move-current-file
-;;             look-sort-files [crash at functions `fifth` and `eight`]
+;;             look-sort-files
 ;;
 ;; 2022-01-29: Importing vapnik's changes. 'fundamental-mode -> (default-value 'major-mode)
 ;;
@@ -420,11 +420,11 @@ PRED can be the symbol 'name (sort names alphabetically),
 		(cl-case pred
 		  (name 'string-lessp)
 		  (age (lambda (a b)
-			 (time-less-p (fifth (file-attributes a))
-				      (fifth (file-attributes b)))))
+			 (time-less-p (cl-fifth (file-attributes a))
+				      (cl-fifth (file-attributes b)))))
 		  (size (lambda (a b)
-			  (<= (eighth (file-attributes a))
-			      (eighth (file-attributes b)))))
+			  (<= (cl-eighth (file-attributes a))
+			      (cl-eighth (file-attributes b)))))
 		  (t pred))))
 	 (pos (if look-current-file
 		  (cl-position look-current-file sortedfiles

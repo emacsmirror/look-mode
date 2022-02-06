@@ -18,7 +18,7 @@
     -           : look-insert-file (file)
     - M-R       : look-reverse-files
     - M-~       : look-move-current-file (pos)
-    - M-^       : look-sort-files (pred) [not working]
+    - M-^       : look-sort-files (pred)
 
     - look-reset-file-settings nil
     - look-customize-defaults nil
