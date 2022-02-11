@@ -38,7 +38,7 @@
 ;;
 ;; 2009-08-21: added function look-at-this-file to fix bug in arxiv-reader
 ;;
-;; 2009-01-08: fixed regexp in list-subdirectories-recursively
+;; 2009-01-08: fixed regexp in look-list-subdirectories-recursively
 
 ;;; Commentary:
 ;;
@@ -319,7 +319,7 @@ enter a function of their own."
                 (setq fullpath-dir-list
                       (nconc fullpath-dir-list
                              (list lfl-item)
-                             (list-subdirectories-recursively
+                             (look-list-subdirectories-recursively
 			      (if (file-name-absolute-p lfl-item) lfl-item
 				(concat look-pwd lfl-item))
 			      look-skip-directory-list)))
@@ -645,7 +645,7 @@ Uses the `look-current-file' to set the mode using `auto-mode-alist'."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Generally useful, but here for now ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun list-subdirectories-recursively (&optional head-dir exclusion-list)
+(defun look-list-subdirectories-recursively (&optional head-dir exclusion-list)
   "Recursively list directories under HEAD-DIR.
 Exclude directory names that match EXCLUSION-LIST."
 ; for look, this should be relative to look-pwd
@@ -662,7 +662,7 @@ Exclude directory names that match EXCLUSION-LIST."
           (setq recursive-dir-list
                 (nconc recursive-dir-list
                        (list lsr-dir)
-                       (list-subdirectories-recursively lsr-dir exclusion-list)))))
+                       (look-list-subdirectories-recursively lsr-dir exclusion-list)))))
     recursive-dir-list))
 
 (provide 'look-mode)
