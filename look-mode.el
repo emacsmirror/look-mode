@@ -247,6 +247,7 @@ enter a function of their own."
   :lighter " Look"
   :keymap look-minor-mode-map)
 
+;;;###autoload
 (add-hook 'dired-mode-hook
           (lambda ()
             (define-key dired-mode-map "\M-l" 'look-at-files)))
@@ -266,6 +267,7 @@ enter a function of their own."
 
 ;;;; Navigation Commands
 
+;;;###autoload
 (defun look-at-files (&optional add)
   "Look at files in directory. Insert into temporary buffer one at a time.
  This function gets the file list from dired-get-marked-files OR
