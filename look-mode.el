@@ -288,24 +288,24 @@ passes it to `look-at-next-file'.  If ADD is non-nil (set by
 prefix arg such as C-u) then files are added to the end of the
 currently looked at files, otherwise they replace them."
   (interactive "P")
-  (if (not add) (setq look-forward-file-list nil
-		      look-reverse-file-list nil
-		      look-current-file nil)
-    (progn (push look-current-file look-reverse-file-list)
-           (setq look-reverse-file-list (append (nreverse look-forward-file-list) look-reverse-file-list)
-                 look-current-file (pop look-reverse-file-list)
-                 look-forward-file-list nil)))
+  (if (not add)
+      (setq look-forward-file-list nil
+	    look-reverse-file-list nil
+	    look-current-file nil)
+    (push look-current-file look-reverse-file-list)
+    (setq look-reverse-file-list (append (nreverse look-forward-file-list) look-reverse-file-list)
+          look-current-file (pop look-reverse-file-list)
+          look-forward-file-list nil))
   ;; first see if there are any marked files from dired
   (setq look-file-list (dired-get-marked-files t)) ;; will this work outside of dired?
-  (if (not (cdr look-file-list)) ;; ie, 1 or 0 files were marked -- req wildcard from user
-      (progn
-        (setq look-wildcard (read-string "Enter filename (w/ wildcards): "))
-        ;; (if (and (string-match "[Jj][Pp][Ee]?[Gg]" look-wildcard)
-        ;;          (not (featurep 'eimp)))
-        ;;     (require 'eimp nil t))
-        (if (string= look-wildcard "")
-            (setq look-wildcard "*"))
-        (setq look-file-list (file-expand-wildcards look-wildcard))))
+  (unless (cdr look-file-list) ;; ie, 1 or 0 files were marked -- req wildcard from user
+    (setq look-wildcard (read-string "Enter filename (w/ wildcards): "))
+    ;; (if (and (string-match "[Jj][Pp][Ee]?[Gg]" look-wildcard)
+    ;;          (not (featurep 'eimp)))
+    ;;     (require 'eimp nil t))
+    (if (string= look-wildcard "")
+        (setq look-wildcard "*"))
+    (setq look-file-list (file-expand-wildcards look-wildcard)))
   (setq look-subdir-list (list "./")
 	look-pwd default-directory)
   (let ( (fullpath-dir-list nil))
@@ -551,20 +551,19 @@ When called interactively reload currently looked at file."
 	(set-buffer-modified-p nil)))
   (kill-buffer look-buffer)		; clear the look-buffer
   (switch-to-buffer look-buffer)	; reopen the look-buffer
-  (if file
-      (progn
-	(insert-file-contents file) ; insert it into the *look* buffer
-	(normal-mode)
-	(if (eq major-mode (default-value 'major-mode))
-	    (look-set-mode-with-auto-mode-alist t))
-	(look-update-header-line)
-	;; apply file settings if available
-        (if (assoc look-current-file look-file-settings)
-	    (eval (cdr (assoc look-current-file look-file-settings)))
-          ;; otherwise, use the default setting
-	  (if (assoc major-mode look-default-file-settings)
-	      (eval (cdr (assoc major-mode look-default-file-settings))))))
-    (look-no-more))
+  (if (not file)
+      (look-no-more)
+    (insert-file-contents file) ; insert it into the *look* buffer
+    (normal-mode)
+    (if (eq major-mode (default-value 'major-mode))
+	(look-set-mode-with-auto-mode-alist t))
+    (look-update-header-line)
+    ;; apply file settings if available
+    (if (assoc look-current-file look-file-settings)
+	(eval (cdr (assoc look-current-file look-file-settings)))
+      ;; otherwise, use the default setting
+      (if (assoc major-mode look-default-file-settings)
+	  (eval (cdr (assoc major-mode look-default-file-settings))))))
   (look-mode))
 
 (defun look-keep-header-on-top (window start)
