@@ -355,12 +355,7 @@ currently looked at files, otherwise they replace them."
 Discards the file from the list if it is not a regular file or symlink to one.
 With prefix arg get the ARG'th next file in the list."
   (interactive "p")		    ; pass no args on interactive call
-  (if (and look-current-file
-	   (assoc major-mode look-file-settings-templates))
-      (let ((info (eval (cdr (assoc major-mode look-file-settings-templates))))
-	    (item (assoc look-current-file look-file-settings)))
-	(if item (setcdr item info)
-	  (add-to-list 'look-file-settings (cons look-current-file info)))))
+  (look-save-file-settings look-current-file)
   (dotimes (i (or arg 1))
     (if look-current-file (push look-current-file look-reverse-file-list))
     (setq look-current-file (if look-forward-file-list
@@ -372,12 +367,7 @@ With prefix arg get the ARG'th next file in the list."
   "Gets the previous file in the list.
 With prefix arg get the ARG'th previous file in the list."
   (interactive "p"); pass no args on interactive call
-  (if (and look-current-file
-	   (assoc major-mode look-file-settings-templates))
-      (let ((info (eval (cdr (assoc major-mode look-file-settings-templates))))
-	    (item (assoc look-current-file look-file-settings)))
-	(if item (setcdr item info)
-	  (add-to-list 'look-file-settings (cons look-current-file info)))))
+  (look-save-file-settings look-current-file)
   (dotimes (i (or arg 1))
     (if look-current-file (push look-current-file look-forward-file-list))
     (setq look-current-file (if look-reverse-file-list
@@ -537,6 +527,21 @@ If prefix arg ARG is non-nil remove files that do match PRED."
 
 ;;;; subroutines
 
+(defun look-save-file-settings (file)
+  "Save file settings in LOOK-FILE-SETTINGS.  If there is a file
+settings template for the major mode of this file, then use it;
+otherwise, save the point and window-start positions."
+  (when file
+    (let ((item (assoc file look-file-settings)))
+      (if (assoc major-mode look-file-settings-templates)
+          (let ((info (eval (cdr (assoc major-mode look-file-settings-templates)))))
+	    (if item (setcdr item info)
+	      (add-to-list 'look-file-settings (cons file info))))
+        (let ((info `(progn (goto-char ,(point))
+                            (set-window-start nil ,(window-start)))))
+          (if item (setcdr item info)
+	    (add-to-list 'look-file-settings (cons file info))))))))
+
 (defun look-at-this-file (file)
   "Insert FILE into `look-buffer' and set mode appropriately.
 When called interactively reload currently looked at file."
@@ -554,9 +559,9 @@ When called interactively reload currently looked at file."
 	    (look-set-mode-with-auto-mode-alist t))
 	(look-update-header-line)
 	;; apply file settings if available
-	(if (and (assoc major-mode look-file-settings-templates)
-		 (assoc look-current-file look-file-settings))
+        (if (assoc look-current-file look-file-settings)
 	    (eval (cdr (assoc look-current-file look-file-settings)))
+          ;; otherwise, use the default setting
 	  (if (assoc major-mode look-default-file-settings)
 	      (eval (cdr (assoc major-mode look-default-file-settings))))))
     (look-no-more))
