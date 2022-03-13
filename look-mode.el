@@ -204,6 +204,36 @@ and whose cdr is an sexp to be evaluated in files with that mode."
     (define-key map (kbd "C-c l") (lambda () (interactive) (customize-group 'look)))
     map)
   "Keymap for Look mode.")
+(easy-menu-define look-menu look-minor-mode-map
+  "Menu for look-mode."
+  '("Look"
+    ["Prev"    look-at-previous-file  ]
+    ["Next"    look-at-next-file      ]
+    ["Remove"  look-remove-this-file  ]
+    ["Search>" look-re-search-forward ]
+    ["<Search" look-re-search-backward]
+    ))
+(progn
+  (makunbound 'look-tool-bar-map) ;; makes the tool bar easily hackable.
+  (defvar look-tool-bar-map
+    (let ((map (make-sparse-keymap)))
+      (tool-bar-local-item-from-menu 'look-at-previous-file "left-arrow" map look-minor-mode-map
+				     :rtl "right-arrow"
+				     :label "Back"
+				     :vert-only t)
+      (tool-bar-local-item-from-menu 'look-at-next-file "right-arrow" map look-minor-mode-map
+				     :rtl "left-arrow"
+				     :label "Forward"
+				     :vert-only t)
+      (define-key-after map [separator-1] menu-bar-separator)
+      (tool-bar-local-item-from-menu 'look-re-search-backward "search" map look-minor-mode-map
+				     :label "C-r")
+      (tool-bar-local-item-from-menu 'look-re-search-forward  "search" map look-minor-mode-map
+				     :label "C-s")
+      (define-key-after map [separator-2] menu-bar-separator)
+      (tool-bar-local-item-from-menu 'look-remove-this-file "close" map look-minor-mode-map
+				     :label "")
+      map)))
 
 (defvar look-sort-predicates '((name . string-lessp)
 			       (age . (lambda (a b)
@@ -257,7 +287,8 @@ enter a function of their own."
   "A minor mode for flipping through files."
   :init-value nil ; maybe make this t?
   :lighter " Look"
-  :keymap look-minor-mode-map)
+  :keymap look-minor-mode-map
+  (setq-local tool-bar-map look-tool-bar-map))
 
 ;;;###autoload
 (add-hook 'dired-mode-hook
