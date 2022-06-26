@@ -209,9 +209,9 @@ and whose cdr is an sexp to be evaluated in files with that mode."
   '("Look"
     ["Prev"    look-at-previous-file  ]
     ["Next"    look-at-next-file      ]
-    ["Remove"  look-remove-this-file  ]
     ["Search>" look-re-search-forward ]
     ["<Search" look-re-search-backward]
+    ["ibuffer" ibuffer                ]
     ))
 (progn
   (makunbound 'look-tool-bar-map) ;; makes the tool bar easily hackable.
@@ -231,8 +231,8 @@ and whose cdr is an sexp to be evaluated in files with that mode."
       (tool-bar-local-item-from-menu 'look-re-search-forward  "search" map look-minor-mode-map
 				     :label "C-s")
       (define-key-after map [separator-2] menu-bar-separator)
-      (tool-bar-local-item-from-menu 'look-remove-this-file "close" map look-minor-mode-map
-				     :label "")
+      (tool-bar-local-item-from-menu 'kill-this-buffer "close" map global-map          :label "")
+      (tool-bar-local-item-from-menu 'ibuffer          "index" map look-minor-mode-map :label "")
       map)))
 
 (defvar look-sort-predicates '((name . string-lessp)
@@ -251,7 +251,7 @@ and whose cdr is an sexp to be evaluated in files with that mode."
 Keeps track of Lisp expressions entered by the user, (but not functions
 selected from the list).")
 
-  (defun ido-choose-function (funcs &optional prompt other arity)
+  (defun ido-choose-function (funcs &optional prompt other)
     "Prompt the user for one of the functions in FUNCS.
 FUNCS should a list of cons cells whose cars are the function names,
  (either strings or symbols), and whose cdrs are the functions themselves.
