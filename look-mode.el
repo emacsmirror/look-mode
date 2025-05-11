@@ -91,7 +91,7 @@
 ;;
 ;; LS-ARGS (string) are the arguments that you would give ls to get the
 ;; desired file list.
-;; 
+;;
 ;; two lists are set up: the file list and the subdirectory list
 ;; to display the subdirectories on the header line, set
 ;; look-show-subdirs to 't'
@@ -139,13 +139,13 @@
 
 (defcustom look-file-settings-templates
   '((doc-view-mode . `(progn (setq doc-view-image-width ,doc-view-image-width)
-			     (doc-view-goto-page ,(doc-view-current-page))
-			     (image-next-line ,(window-vscroll))
-			     (set-window-hscroll nil ,(window-hscroll))))
+                             (doc-view-goto-page ,(doc-view-current-page))
+                             (image-next-line ,(window-vscroll))
+                             (set-window-hscroll nil ,(window-hscroll))))
     (pdf-view-mode . `(progn (setq pdf-view-display-size ',pdf-view-display-size)
-			     (pdf-view-goto-page ,(pdf-view-current-page))
-			     (image-next-line ,(window-vscroll))
-			     (set-window-hscroll nil ,(window-hscroll)))))
+                             (pdf-view-goto-page ,(pdf-view-current-page))
+                             (image-next-line ,(window-vscroll))
+                             (set-window-hscroll nil ,(window-hscroll)))))
   "Extra information used by `look-at-this-file' to display files.
 This is a alist whose keys are `major-mode' symbols, and whose
 values are sexps to be evaluated in the `look-buffer' for saving
@@ -154,7 +154,7 @@ The sexp should return another sexp that sets the image size,
 page number etc, and will be evaluated when the file is visited again."
   :group 'look
   :type '(alist :key-type (symbol :tag "Major mode")
-		:value-type (sexp :tag "List")))
+                :value-type (sexp :tag "List")))
 
 (defcustom look-default-file-settings
   '((doc-view-mode . (doc-view-fit-height-to-window))
@@ -164,7 +164,7 @@ Each element is a cons cell whose car is a `major-mode' symbol,
 and whose cdr is an sexp to be evaluated in files with that mode."
   :group 'look
   :type '(alist :key-type (symbol :tag "Major mode")
-		:value-type (sexp :tag "List")))
+                :value-type (sexp :tag "List")))
 
 ;; Variables that make the code work
 (defvar look-file-settings nil
@@ -218,34 +218,34 @@ and whose cdr is an sexp to be evaluated in files with that mode."
   (defvar look-tool-bar-map
     (let ((map (make-sparse-keymap)))
       (tool-bar-local-item-from-menu 'look-at-previous-file "left-arrow" map look-minor-mode-map
-				     :rtl "right-arrow"
-				     :label "Back"
-				     :vert-only t)
+                                     :rtl "right-arrow"
+                                     :label "Back"
+                                     :vert-only t)
       (tool-bar-local-item-from-menu 'look-at-next-file "right-arrow" map look-minor-mode-map
-				     :rtl "left-arrow"
-				     :label "Forward"
-				     :vert-only t)
+                                     :rtl "left-arrow"
+                                     :label "Forward"
+                                     :vert-only t)
       (define-key-after map [separator-1] menu-bar-separator)
       (tool-bar-local-item-from-menu 'look-re-search-backward "search" map look-minor-mode-map
-				     :label "C-r")
+                                     :label "C-r")
       (tool-bar-local-item-from-menu 'look-re-search-forward  "search" map look-minor-mode-map
-				     :label "C-s")
+                                     :label "C-s")
       (define-key-after map [separator-2] menu-bar-separator)
       (tool-bar-local-item-from-menu 'kill-this-buffer "close" map global-map          :label "")
       (tool-bar-local-item-from-menu 'ibuffer          "index" map look-minor-mode-map :label "")
       map)))
 
 (defvar look-sort-predicates '((name . string-lessp)
-			       (age . (lambda (a b)
-					(time-less-p (cl-fifth (file-attributes a))
-						     (cl-fifth (file-attributes b)))))
-			       (size . (lambda (a b)
-					 (<= (cl-eighth (file-attributes a))
-					     (cl-eighth (file-attributes b))))))
+                               (age . (lambda (a b)
+                                        (time-less-p (cl-fifth (file-attributes a))
+                                                     (cl-fifth (file-attributes b)))))
+                               (size . (lambda (a b)
+                                         (<= (cl-eighth (file-attributes a))
+                                             (cl-eighth (file-attributes b))))))
   "List of sorting predicate functions.")
 
 (unless (and (fboundp 'ido-choose-function)
-	     (boundp 'ido-read-function-history))
+             (boundp 'ido-read-function-history))
   (defvar ido-read-function-history nil
     "A history list of Lisp expressions forf `ido-choose-function'.
 Keeps track of Lisp expressions entered by the user, (but not functions
@@ -260,28 +260,28 @@ If OTHER is non-nil allow the user to enter a function of their own.
 If OTHER is a string, use that as the prompt when asking the user to
 enter a function of their own."
     (cl-flet ((asstring (x) (if (symbolp x) (symbol-name x)
-			      (if (stringp x) x
-				(error "Invalid element: %S" x)))))
+                              (if (stringp x) x
+                                (error "Invalid element: %S" x)))))
       (let* ((names (mapcar (lambda (x) (asstring (car x))) funcs))
-	     (otherstr (if other
-			   (if (not (member "other" names))
-			       "other"
-			     "user function")))
-	     (otherprompt (if other
-			      (if (stringp other)
-				  other
-				"User function: ")))
-	     (choice (ido-completing-read
-		      (or prompt "Function: ")
-		      (append (if otherstr (list otherstr)) names)
-		      nil nil nil 'ido-functions-history))
-	     (func (if (equal choice otherstr)
-		       (read-from-minibuffer
-			otherprompt nil nil t 'ido-read-function-history)
-		     (cdr (cl-assoc choice funcs
-				    :test (lambda (a b) (equal (asstring a)
-							       (asstring b))))))))
-	(if (functionp func) func (error "Invalid function: %S" func))))))
+             (otherstr (if other
+                           (if (not (member "other" names))
+                               "other"
+                             "user function")))
+             (otherprompt (if other
+                              (if (stringp other)
+                                  other
+                                "User function: ")))
+             (choice (ido-completing-read
+                      (or prompt "Function: ")
+                      (append (if otherstr (list otherstr)) names)
+                      nil nil nil 'ido-functions-history))
+             (func (if (equal choice otherstr)
+                       (read-from-minibuffer
+                        otherprompt nil nil t 'ido-read-function-history)
+                     (cdr (cl-assoc choice funcs
+                                    :test (lambda (a b) (equal (asstring a)
+                                                               (asstring b))))))))
+        (if (functionp func) func (error "Invalid function: %S" func))))))
 
 (define-minor-mode look-mode
   "A minor mode for flipping through files."
@@ -321,8 +321,8 @@ currently looked at files, otherwise they replace them."
   (interactive "P")
   (if (not add)
       (setq look-forward-file-list nil
-	    look-reverse-file-list nil
-	    look-current-file nil)
+            look-reverse-file-list nil
+            look-current-file nil)
     (push look-current-file look-reverse-file-list)
     (setq look-reverse-file-list (append (nreverse look-forward-file-list) look-reverse-file-list)
           look-current-file (pop look-reverse-file-list)
@@ -338,7 +338,7 @@ currently looked at files, otherwise they replace them."
         (setq look-wildcard "*"))
     (setq look-file-list (file-expand-wildcards look-wildcard)))
   (setq look-subdir-list (list "./")
-	look-pwd default-directory)
+        look-pwd default-directory)
   (let ( (fullpath-dir-list nil))
     ;; use relative file names to prevent weird side effects with skip lists
     ;; cat look-pwd with filename, separate dirs from files,
@@ -353,7 +353,7 @@ currently looked at files, otherwise they replace them."
           (setq look-forward-file-list
                 (nconc look-forward-file-list
                        (list (if (file-name-absolute-p lfl-item) lfl-item
-			       (concat look-pwd lfl-item)))))
+                               (concat look-pwd lfl-item)))))
         (if (and (file-directory-p lfl-item)
                  ;; check if any regexps in skip list match directory
                  (catch 'skip-this-one
@@ -365,9 +365,9 @@ currently looked at files, otherwise they replace them."
                       (nconc fullpath-dir-list
                              (list lfl-item)
                              (look-list-subdirectories-recursively
-			      (if (file-name-absolute-p lfl-item) lfl-item
-				(concat look-pwd lfl-item))
-			      look-skip-directory-list)))
+                              (if (file-name-absolute-p lfl-item) lfl-item
+                                (concat look-pwd lfl-item))
+                              look-skip-directory-list)))
               (setq fullpath-dir-list
                     (nconc fullpath-dir-list
                            (list lfl-item)))))))
@@ -390,8 +390,8 @@ With prefix arg get the ARG'th next file in the list."
   (dotimes (i (or arg 1))
     (if look-current-file (push look-current-file look-reverse-file-list))
     (setq look-current-file (if look-forward-file-list
-				;; get the next file in the list
-				(pop look-forward-file-list))))
+                                ;; get the next file in the list
+                                (pop look-forward-file-list))))
   (look-at-this-file look-current-file))
 
 (defun look-at-previous-file (&optional arg)
@@ -402,8 +402,8 @@ With prefix arg get the ARG'th previous file in the list."
   (dotimes (i (or arg 1))
     (if look-current-file (push look-current-file look-forward-file-list))
     (setq look-current-file (if look-reverse-file-list
-				;; get the next file in the list
-				(pop look-reverse-file-list))))
+                                ;; get the next file in the list
+                                (pop look-reverse-file-list))))
   (look-at-this-file look-current-file))
 
 (defun look-remove-this-file nil
@@ -411,10 +411,10 @@ With prefix arg get the ARG'th previous file in the list."
   (interactive)
   (unless (not (y-or-n-p "Remove current file? "))
     (setq look-current-file
-	  (if look-reverse-file-list	;remove the current file
-	      (pop look-reverse-file-list)
-	    (if look-forward-file-list
-		(pop look-reverse-file-list))))
+          (if look-reverse-file-list	;remove the current file
+              (pop look-reverse-file-list)
+            (if look-forward-file-list
+                (pop look-reverse-file-list))))
     (look-at-this-file look-current-file)))
 
 (defun look-insert-file (file)
@@ -422,12 +422,12 @@ With prefix arg get the ARG'th previous file in the list."
 File will be inserted in front of current position,
 and will become the new currently looked at file."
   (interactive (list (ido-read-file-name
-		      "File: "
-		      (if look-current-file
-			  (file-name-directory look-current-file)))))
+                      "File: "
+                      (if look-current-file
+                          (file-name-directory look-current-file)))))
   (setq look-reverse-file-list
-	(cons look-current-file look-reverse-file-list)
-	look-current-file file)
+        (cons look-current-file look-reverse-file-list)
+        look-current-file file)
   (look-at-this-file look-current-file))
 
 (defun look-at-nth-file (n)
@@ -436,47 +436,47 @@ If N is negative count backwards from the end of the list.
 With 0 being the first file, and -1 being the last file,
 -2 the second last file, etc."
   (interactive (list (or current-prefix-arg
-			 (read-number "Goto position in list (-ve No.s count backwards from end): "))))
+                         (read-number "Goto position in list (-ve No.s count backwards from end): "))))
   (let ((nback (length look-reverse-file-list))
-	(nforward (length look-forward-file-list)))
+        (nforward (length look-forward-file-list)))
     (cond ((not (integerp n)) (error "N must be an integer"))
-	  ((> n (+ nback nforward)) (error "N too large"))
-	  ((>= n nback) (look-at-next-file (- n nback)))
-	  ((>= n 0) (look-at-previous-file (- nback n)))
-	  ((< n (- (+ 1 nback nforward))) (error "N too small"))
-	  (t (look-at-nth-file (+ n 1 nback nforward))))))
+          ((> n (+ nback nforward)) (error "N too large"))
+          ((>= n nback) (look-at-next-file (- n nback)))
+          ((>= n 0) (look-at-previous-file (- nback n)))
+          ((< n (- (+ 1 nback nforward))) (error "N too small"))
+          (t (look-at-nth-file (+ n 1 nback nforward))))))
 
 (defun look-at-specific-file (file)
   "Jump to a specific FILE in the `look-mode' list."
   (interactive (list (ido-completing-read
-		      "File: "
-		      (append look-reverse-file-list look-forward-file-list)
-		      nil t)))
+                      "File: "
+                      (append look-reverse-file-list look-forward-file-list)
+                      nil t)))
   (if (member file look-reverse-file-list)
       (look-at-nth-file (cl-position file look-reverse-file-list :test 'equal))
     (if (member file look-forward-file-list)
-	(look-at-nth-file (+ (length look-reverse-file-list)
-			     (cl-position file look-forward-file-list :test 'equal)
-			     1)))))
+        (look-at-nth-file (+ (length look-reverse-file-list)
+                             (cl-position file look-forward-file-list :test 'equal)
+                             1)))))
 
 (defun look-re-search-forward (regex)
   "Search forward through looked at files for REGEX."
   (interactive (list (read-regexp "Regexp: ")))
   (while (and look-current-file
-	      (not (cl-case major-mode
-		     (pdf-view-mode (pdf-isearch-search-function regex))
-		     (doc-view-mode (doc-view-search regex))
-		     (t (search-forward regex nil t)))))
+              (not (cl-case major-mode
+                     (pdf-view-mode (pdf-isearch-search-function regex))
+                     (doc-view-mode (doc-view-search regex))
+                     (t (search-forward regex nil t)))))
     (look-at-next-file)))
 
 (defun look-re-search-backward (regex)
   "Search backward through looked at files for REGEX."
   (interactive (list (read-regexp "Regexp: ")))
   (while (and look-current-file
-	      (not (cl-case major-mode
-		     (pdf-view-mode (pdf-isearch-search-function regex))
-		     (doc-view-mode (doc-view-search regex t))
-		     (t (search-backward regex nil t)))))
+              (not (cl-case major-mode
+                     (pdf-view-mode (pdf-isearch-search-function regex))
+                     (doc-view-mode (doc-view-search regex t))
+                     (t (search-backward regex nil t)))))
     (look-at-previous-file)
     (goto-char (point-max))))
 
@@ -484,57 +484,57 @@ With 0 being the first file, and -1 being the last file,
   "Sort the looked at files using function PRED.
 PRED is a function of two arguments as used by `sort' (which see)."
   (interactive (list (ido-choose-function
-		      look-sort-predicates "Sort predicate: " "Function of 2 args: ")))
+                      look-sort-predicates "Sort predicate: " "Function of 2 args: ")))
   (let* ((allfiles (append (reverse look-reverse-file-list)
-			   (if look-current-file
-			       (list look-current-file))
-			   look-forward-file-list))
-	 (sortedfiles (sort allfiles pred))
-	 (pos (if look-current-file
-		  (cl-position look-current-file sortedfiles
-			       :test 'equal))))
+                           (if look-current-file
+                               (list look-current-file))
+                           look-forward-file-list))
+         (sortedfiles (sort allfiles pred))
+         (pos (if look-current-file
+                  (cl-position look-current-file sortedfiles
+                               :test 'equal))))
     (setq look-forward-file-list (if pos (cl-subseq sortedfiles (1+ pos))
-				   (if look-forward-file-list sortedfiles))
-	  look-reverse-file-list (reverse
-				  (if pos (cl-subseq sortedfiles 0 pos)
-				    (if look-reverse-file-list sortedfiles))))
+                                   (if look-forward-file-list sortedfiles))
+          look-reverse-file-list (reverse
+                                  (if pos (cl-subseq sortedfiles 0 pos)
+                                    (if look-reverse-file-list sortedfiles))))
     (look-update-header-line)))
 
 (defun look-reverse-files nil
   "Reverse the order of the looked at files."
   (interactive)
   (let* ((files (reverse (append (reverse look-reverse-file-list)
-				 (if look-current-file (list look-current-file))
-				 look-forward-file-list)))
-	 (pos (if look-current-file
-		  (cl-position look-current-file files :test 'equal))))
+                                 (if look-current-file (list look-current-file))
+                                 look-forward-file-list)))
+         (pos (if look-current-file
+                  (cl-position look-current-file files :test 'equal))))
     (setq look-forward-file-list (if pos (cl-subseq files (1+ pos))
-				   (if look-forward-file-list files))
-	  look-reverse-file-list (reverse
-				  (if pos (cl-subseq files 0 pos)
-				    (if look-reverse-file-list files))))
+                                   (if look-forward-file-list files))
+          look-reverse-file-list (reverse
+                                  (if pos (cl-subseq files 0 pos)
+                                    (if look-reverse-file-list files))))
     (look-update-header-line)))
 
 (defun look-move-current-file (pos)
   "Move currently looked at file to position POS in list."
   (interactive (list
-		(read-number
-		 "Move to position (-ve No.s count backwards from end): ")))
+                (read-number
+                 "Move to position (-ve No.s count backwards from end): ")))
   (let* ((files (append (reverse look-reverse-file-list)
-			look-forward-file-list))
-	 (nback (length look-reverse-file-list))
-	 (nforward (length look-forward-file-list))
-	 (pos2 (cond ((not (integerp pos))
-		      (error "Position must be an integer"))
-		     ((> pos (+ nback nforward))
-		      (error "Position value too large"))
-		     ((< pos (- (+ 1 nback nforward)))
-		      (error "Position value too small"))
-		     ((< pos 0)
-		      (+ pos 1 nback nforward))
-		     (t pos))))
+                        look-forward-file-list))
+         (nback (length look-reverse-file-list))
+         (nforward (length look-forward-file-list))
+         (pos2 (cond ((not (integerp pos))
+                      (error "Position must be an integer"))
+                     ((> pos (+ nback nforward))
+                      (error "Position value too large"))
+                     ((< pos (- (+ 1 nback nforward)))
+                      (error "Position value too small"))
+                     ((< pos 0)
+                      (+ pos 1 nback nforward))
+                     (t pos))))
     (setq look-forward-file-list (cl-subseq files pos2)
-	  look-reverse-file-list (reverse (cl-subseq files 0 pos2)))
+          look-reverse-file-list (reverse (cl-subseq files 0 pos2)))
     (look-update-header-line)))
 
 (defun look-reset-file-settings nil
@@ -566,12 +566,12 @@ otherwise, save the point and window-start positions."
     (let ((item (assoc file look-file-settings)))
       (if (assoc major-mode look-file-settings-templates)
           (let ((info (eval (cdr (assoc major-mode look-file-settings-templates)))))
-	    (if item (setcdr item info)
-	      (add-to-list 'look-file-settings (cons file info))))
+            (if item (setcdr item info)
+              (add-to-list 'look-file-settings (cons file info))))
         (let ((info `(progn (goto-char ,(point))
                             (set-window-start nil ,(window-start)))))
           (if item (setcdr item info)
-	    (add-to-list 'look-file-settings (cons file info))))))))
+            (add-to-list 'look-file-settings (cons file info))))))))
 
 (defun look-at-this-file (file)
   "Insert FILE into `look-buffer' and set mode appropriately.
@@ -579,7 +579,7 @@ When called interactively reload currently looked at file."
   (interactive (list look-current-file))
   (with-current-buffer look-buffer
     (if (memq major-mode '(doc-view-mode pdf-view-mode image-mode))
-	(set-buffer-modified-p nil)))
+        (set-buffer-modified-p nil)))
   (kill-buffer look-buffer)		; clear the look-buffer
   (switch-to-buffer look-buffer)	; reopen the look-buffer
   (if (not file)
@@ -587,14 +587,14 @@ When called interactively reload currently looked at file."
     (insert-file-contents file) ; insert it into the *look* buffer
     (normal-mode)
     (if (eq major-mode (default-value 'major-mode))
-	(look-set-mode-with-auto-mode-alist t))
+        (look-set-mode-with-auto-mode-alist t))
     (look-update-header-line)
     ;; apply file settings if available
     (if (assoc look-current-file look-file-settings)
-	(eval (cdr (assoc look-current-file look-file-settings)))
+        (eval (cdr (assoc look-current-file look-file-settings)))
       ;; otherwise, use the default setting
       (if (assoc major-mode look-default-file-settings)
-	  (eval (cdr (assoc major-mode look-default-file-settings))))))
+          (eval (cdr (assoc major-mode look-default-file-settings))))))
   (look-mode))
 
 (defun look-keep-header-on-top (window start)
@@ -617,7 +617,7 @@ Argument WINDOW not used.  Argument START is the start position."
                                    (number-to-string (length look-reverse-file-list))
                                    "| "
                                    (substring relfilename (max (- 10 (frame-width))
-							       (- (length relfilename))))
+                                                               (- (length relfilename))))
                                    " |"
                                    (number-to-string (length look-forward-file-list)) "]")))
         (jj 1))
@@ -639,15 +639,15 @@ Argument WINDOW not used.  Argument START is the start position."
                                                             (lface-header "\n")))
     (move-overlay look-header-overlay (window-start) (window-start) (get-buffer look-buffer))
     (add-hook 'window-scroll-functions 'look-keep-header-on-top nil t)))
-  
+
 (defun look-no-more nil
   "What to do when one gets to the end of a file list."
   (setq look-current-file nil)
   (if look-forward-file-list
       (setq header-line-format
-	    "No more files to display.  Use look-at-next-file (M-n or C-.[think:>]) to go forward")
+            "No more files to display.  Use look-at-next-file (M-n or C-.[think:>]) to go forward")
     (setq header-line-format
-	  "No more files to display.  Use look-at-previous-file (M-p or C-,[think:<]) to go back")))
+          "No more files to display.  Use look-at-previous-file (M-p or C-,[think:<]) to go back")))
 
 (defun look-set-mode-with-auto-mode-alist (&optional keep-mode-if-same)
   "Taken shamelessly from `set-auto-mode' in files.el (which see).
