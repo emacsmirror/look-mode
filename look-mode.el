@@ -611,8 +611,8 @@ Argument WINDOW not used.  Argument START is the start position."
 
 (defun look-update-header-line nil
   "Defines the header line for function `look-mode'."
-  (let* ((relfilename (replace-regexp-in-string look-pwd "" look-current-file))
-	 (look-header-line (lface-header
+  (let* ((relfilename (file-relative-name look-current-file look-pwd))
+         (look-header-line (lface-header
                            (concat "["
                                    (number-to-string (length look-reverse-file-list))
                                    "| "
